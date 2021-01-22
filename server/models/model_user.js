@@ -19,6 +19,10 @@ var modelUser = new Schema({
       type: String,
       default: 'USER_ROLE',
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
     actual_budget: {
         start_date : {
             type: Date,
