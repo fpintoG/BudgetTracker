@@ -1,4 +1,5 @@
 const ModelDailyBudget = require('../../models/model_daily_budget');
+const ModelUser = require('../../models/model_user');
 
 function errorHandler(err, next, item) {
     if(err){      
@@ -11,7 +12,7 @@ function errorHandler(err, next, item) {
     }    
 }
 
-function listByUser(req, res, next) {
+const listByUser = async (req, res, next) => {
     let _user_id = req.params.user_id;
     ModelDailyBudget.find({ user_id: _user_id }, (err, items) => {  
         if (err || !items) return errorHandler(err, next, items);

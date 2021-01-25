@@ -14,11 +14,25 @@ var modelTransaction = new Schema({
         type: Number,
         required: true
     },
-    description: {
-        type: String
+    category: {
+        type: String,
+        required: true
     }
 })
 
-const model = mongoose.model('ModelTransaction', modelTransaction);
+modelTransaction.methods.generateTransaction = function(dailyBudget) {
+    dailyBudget.acc_amount += this.amount;
+    dailyBudget.aviable_amount -= this.amount;
+    dailyBudget.categories.map((category_name, aviable_amount, acc_amount) => {
+        if (category_name === this.category_name) {
+            acc_amount += this.amount;
+            aviable_amount -= this.amount;
+        }
+    })
+    dailyBudget.save()
 
+    return this.save()
+}
+
+const model = mongoose.model('ModelTransaction', modelTransaction);
 module.exports = model;
