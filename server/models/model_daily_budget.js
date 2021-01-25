@@ -44,13 +44,12 @@ modelDailyBudget.methods.generateDailyBudget = function(docUser) {
         current_date.getTime() <= budget_model.end_date.getTime()) {
         this.user_id = docUser._id
         this.date = current_date
-        this.acc_amount = budget_model.max_amount
+        this.aviable_amount = budget_model.max_amount
         // look for categories
-        budget_model.categories.map((category_name, max_amount) =>{
-            let category =  { category_name: category_name, lastName: max_amount }
+        budget_model.categories.map((_category) =>{
+            let category =  { category_name: _category.category_name, aviable_amount: _category.max_amount }
             this.categories.push(category)
         })
-        
         return this.save()
     }
     return null

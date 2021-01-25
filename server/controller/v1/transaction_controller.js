@@ -1,5 +1,5 @@
 import { endOfDay, startOfDay } from 'date-fns'
-
+const mongoose = require('mongoose');
 const ModelUser = require('../../models/model_user');
 const ModelDailyBudget = require('../../models/model_daily_budget');
 const ModelTransaction = require('../../models/model_transaction');
@@ -36,11 +36,11 @@ function listByDailyBudget(req, res, next) {
 
 const makeTransaction = async (req, res, next) => {
     try {
-        let user_id = req.params.user_id;
-        user = await ModelUser.findById(user_id).exec(); 
+        let user_id = mongoose.Types.ObjectId(req.body.user_id);
+        let user = await ModelUser.findById(user_id).exec(); 
         if (!user) sendErrorResponse(res, 'Could not find user');
 
-        let transaction_date = new Date(req.params.transaction_date);
+        let transaction_date = new Date(req.body.transaction_date);
         console.log(transaction_date);
         let daily_budget = await ModelDailyBudget.findOne({
             date: {
@@ -57,8 +57,8 @@ const makeTransaction = async (req, res, next) => {
         let data = {
             daily_budget_id : daily_budget._id,
             date : transaction_date,
-            amount : req.params.amount,
-            category : req.params.category
+            amount : req.body.amount,
+            category : req.body.category
         }
 
         let tran = await new ModelTransaction(data).generateTransaction(daily_budget);
