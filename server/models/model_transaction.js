@@ -23,10 +23,10 @@ var modelTransaction = new Schema({
 modelTransaction.methods.generateTransaction = function(dailyBudget) {
     dailyBudget.acc_amount += this.amount;
     dailyBudget.aviable_amount -= this.amount;
-    dailyBudget.categories.map((category_name, aviable_amount, acc_amount) => {
-        if (category_name === this.category_name) {
-            acc_amount += this.amount;
-            aviable_amount -= this.amount;
+    dailyBudget.categories.map((_category) => {
+        if (_category.category_name === this.category) {
+            _category.acc_amount += this.amount;
+            _category.aviable_amount -= this.amount;
         }
     })
     dailyBudget.save()

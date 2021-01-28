@@ -9,6 +9,7 @@ const routersV1 = require('./routers/v1/index');
 const app = express();
 
 const ModelUser = require('./models/model_user');
+const ModelBudget = require('./models/model_budget');
 
 if (process.env.NODE_ENV === 'development'){
 	console.log('development env');
@@ -60,44 +61,51 @@ mongoose.connect(URL_MONGO, {
 	useUnifiedTopology: true,
 	useFindAndModify: false,
 	useCreateIndex: true
-}).then( ()=> {
+}).then( async ()=> {
 	console.log('Mongo OK')
 
-	ModelUser.findOne(
-		{ email: 'admin@test.com' }, (err, user) => {
+	await ModelUser.findOne(
+		{ email: 'admin@test.com' }, async (err, user) => {
 		if (!user) {
 
 			let data = {
 				name: 'admin',
 				email: 'admin@test.com',
 				password: bcrypt.hashSync('123456', 10),
-				role: 'ADMIN_ROLE',
-				actual_budget: {
-					start_date: new Date('2021/01/02'),
-					end_date: new Date('2021/02/03'),
-					max_amount: 500000,
-					categories: [
-						{
-							category_name: "comida",
-							max_amount: 200000
-						},
-						{
-							category_name: "transporte",
-							max_amount: 100000
-						},
-						{
-							category_name: "gastos_medicos",
-							max_amount: 100000
-						},
-						{
-							category_name: "estudios",
-							max_amount: 100000
-						}
-					]
-				}
+				role: 'ADMIN_ROLE'
 			}
 			console.log('save............')
-			new ModelUser(data).save();
+			user = await new ModelUser(data).save();
+			
+			data = {
+				user_id: user._id,
+				start_date: new Date('2021/01/02'),
+				end_date: new Date('2021/02/03'),
+				max_amount: 500000,
+				categories: [
+					{
+						category_name: "comida",
+						max_amount: 200000
+					},
+					{
+						category_name: "transporte",
+						max_amount: 100000
+					},
+					{
+						category_name: "gastos_medicos",
+						max_amount: 100000
+					},
+					{
+						category_name: "estudios",
+						max_amount: 100000
+					}
+				]
+			}
+		
+			let budget = await new ModelBudget(data).save();
+		
+			user.actual_budget = budget._id;
+			user.save()
 		}
 	});
 

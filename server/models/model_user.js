@@ -24,32 +24,8 @@ var modelUser = new Schema({
 		default: true
     },
     actual_budget: {
-        start_date : {
-            type: Date,
-            required: true
-        },
-        end_date : {
-			type: Date,
-			required: true  
-        },
-        autoRenewal: {
-            type: Boolean,
-            default: true
-        },
-        max_amount: {
-			type: Number,
-			required: true
-		},
-		categories: [{
-			category_name: {
-				type: String,
-				unique: true
-			},
-			max_amount: {
-				type: Number,
-				required: true
-			}
-		}]
+		type: Schema.Types.ObjectId,
+		ref: 'ModelBudget'
     }
 });
 

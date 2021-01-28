@@ -22,14 +22,22 @@ var modelBudget = new Schema({
       type: Number,
       required: true
     },
+    acc_amount: {
+        type: Number,
+        default: 0
+    },
     categories: [{
-        name: {
+        category_name: {
             type: String,
             unique: true
         },
         max_amount: {
             type: Number,
             required: true
+        },
+        acc_amount: {
+            type: Number,
+            default: 0
         }
     }]
 })
@@ -39,6 +47,19 @@ modelBudget.index(
     {unique: true, partialFilterExpression: {active: true}}
 );
 
-const model = mongoose.model('ModelBudget', modelBudget);
 
+modelBudget.methods.updateBudget = function(last_daily_budget) {
+    this.acc_amount += last_daily_budget.acc_amount
+    last_daily_budget.categories.map((_daily_category) =>{
+        this.categories.map((_budget_category) =>{
+            if (_budget_category.category_name === _daily_category.category_name) {
+                _budget_category.acc_amount += _daily_category.acc_amount
+            }
+        })
+    })
+
+    return this.save()
+}
+
+const model = mongoose.model('ModelBudget', modelBudget);
 module.exports = model;

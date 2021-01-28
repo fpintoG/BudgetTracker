@@ -1,6 +1,7 @@
 import { endOfDay, startOfDay } from 'date-fns'
 const mongoose = require('mongoose');
 const ModelUser = require('../../models/model_user');
+const ModelBudget = require('../../models/model_budget');
 const ModelDailyBudget = require('../../models/model_daily_budget');
 const ModelTransaction = require('../../models/model_transaction');
 
@@ -41,7 +42,6 @@ const makeTransaction = async (req, res, next) => {
         if (!user) sendErrorResponse(res, 'Could not find user');
 
         let transaction_date = new Date(req.body.transaction_date);
-        console.log(transaction_date);
         let daily_budget = await ModelDailyBudget.findOne({
             date: {
                 $gte: startOfDay(transaction_date),
@@ -50,8 +50,10 @@ const makeTransaction = async (req, res, next) => {
         }).exec(); 
 
         if (!daily_budget) {
-            daily_budget = await new ModelDailyBudget().generateDailyBudget(user);
-            if (!daily_budget) sendErrorResponse(res, 'User has no active budget');
+            let budget = await ModelBudget.findById(user.actual_budget).exec(); 
+            if (!budget) sendErrorResponse(res, 'User has no active budget');
+            daily_budget = await new ModelDailyBudget()
+                                    .generateDailyBudget(budget);
         }
 
         let data = {

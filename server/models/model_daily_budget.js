@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var modelDailyBudget = new Schema({
-    user_id: {
+    budget_id: {
         type: Schema.Types.ObjectId,
-        ref: 'ModelUser'
+        ref: 'ModelBudget'
     },
     date: {
         type: Date,
@@ -21,8 +21,7 @@ var modelDailyBudget = new Schema({
     },
     categories: [{
         category_name: {
-            type: String,
-            unique: true
+            type: String
         },
         aviable_amount: {
             type: Number,
@@ -35,24 +34,34 @@ var modelDailyBudget = new Schema({
     }]    
 });
 
-modelDailyBudget.methods.generateDailyBudget = function(docUser) {
+modelDailyBudget.methods.generateDailyBudget = async function(budget) {
     let current_date = new Date();
-    let budget_model = docUser.actual_budget
 
     // check if actual date is in budget range
-    if (current_date.getTime() >= budget_model.start_date.getTime() && 
-        current_date.getTime() <= budget_model.end_date.getTime()) {
-        this.user_id = docUser._id
+    if (current_date.getTime() >= budget.start_date.getTime() && 
+        current_date.getTime() <= budget.end_date.getTime()) {
+		
+		last_daily_budget = await this.schema.statics.getLastDailyBudget(budget._id)
+		if (last_daily_budget) await budget.updateBudget(last_daily_budget)
+
+        this.budget_id = budget._id
         this.date = current_date
-        this.aviable_amount = budget_model.max_amount
+        this.aviable_amount = budget.max_amount - budget.acc_amount
         // look for categories
-        budget_model.categories.map((_category) =>{
-            let category =  { category_name: _category.category_name, aviable_amount: _category.max_amount }
+        budget.categories.map((_category) =>{
+			let category =  { category_name: _category.category_name, 
+							aviable_amount: _category.max_amount - _category.acc_amount}
             this.categories.push(category)
         })
         return this.save()
     }
     return null
+}
+
+
+modelDailyBudget.statics.getLastDailyBudget = function(_budget_id) {
+	return mongoose.model('ModelDailyBudget').findOne({budget_id: _budget_id})
+					.sort({created_at: -1}).exec();	
 }
 
 const model = mongoose.model('ModelDailyBudget', modelDailyBudget);
