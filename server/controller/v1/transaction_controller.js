@@ -53,7 +53,7 @@ const makeTransaction = async (req, res, next) => {
             let budget = await ModelBudget.findById(user.actual_budget).exec(); 
             if (!budget) sendErrorResponse(res, 'User has no active budget');
             daily_budget = await new ModelDailyBudget()
-                                    .generateDailyBudget(budget);
+                                    .generateDailyBudget(budget, transaction_date);
         }
 
         let data = {

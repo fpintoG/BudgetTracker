@@ -34,18 +34,16 @@ var modelDailyBudget = new Schema({
     }]    
 });
 
-modelDailyBudget.methods.generateDailyBudget = async function(budget) {
-    let current_date = new Date();
-
+modelDailyBudget.methods.generateDailyBudget = async function(budget, transaction_date) {
     // check if actual date is in budget range
-    if (current_date.getTime() >= budget.start_date.getTime() && 
-        current_date.getTime() <= budget.end_date.getTime()) {
+    if (transaction_date.getTime() >= budget.start_date.getTime() && 
+	   transaction_date.getTime() <= budget.end_date.getTime()) {
 		
 		last_daily_budget = await this.schema.statics.getLastDailyBudget(budget._id)
 		if (last_daily_budget) await budget.updateBudget(last_daily_budget)
 
         this.budget_id = budget._id
-        this.date = current_date
+        this.date = transaction_date
         this.aviable_amount = budget.max_amount - budget.acc_amount
         // look for categories
         budget.categories.map((_category) =>{
