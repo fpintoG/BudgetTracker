@@ -40,20 +40,21 @@ modelDailyBudget.methods.generateDailyBudget = async function(budget, transactio
 	   transaction_date.getTime() <= budget.end_date.getTime()) {
 		
 		last_daily_budget = await this.schema.statics.getLastDailyBudget(budget._id)
-		if (last_daily_budget) await budget.updateBudget(last_daily_budget)
+		if (last_daily_budget) await budget.updateBudget(last_daily_budget);
 
-        this.budget_id = budget._id
-        this.date = transaction_date
-        this.aviable_amount = budget.max_amount - budget.acc_amount
+        this.budget_id = budget._id;
+        this.date = transaction_date;
+        this.aviable_amount = budget.max_amount - budget.acc_amount;
         // look for categories
-        budget.categories.map((_category) =>{
+        this.categories = budget.categories.map(_category => {
 			let category =  { category_name: _category.category_name, 
-							aviable_amount: _category.max_amount - _category.acc_amount}
-            this.categories.push(category)
-        })
-        return this.save()
+							aviable_amount: _category.max_amount - _category.acc_amount};
+            return category;
+        });
+        
+        return this.save();
     }
-    return null
+    return null;
 }
 
 

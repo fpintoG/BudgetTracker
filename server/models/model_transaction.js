@@ -18,20 +18,23 @@ var modelTransaction = new Schema({
         type: String,
         required: true
     }
-})
+});
 
-modelTransaction.methods.generateTransaction = function(dailyBudget) {
-    dailyBudget.acc_amount += this.amount;
-    dailyBudget.aviable_amount -= this.amount;
-    dailyBudget.categories.map((_category) => {
-        if (_category.category_name === this.category) {
-            _category.acc_amount += this.amount;
-            _category.aviable_amount -= this.amount;
-        }
-    })
-    dailyBudget.save()
+modelTransaction.methods.generateTransaction = function(daily_budget) {
+    const category_index = daily_budget.categories.findIndex(_category => 
+        _category.category_name === this.category   
+    );
 
-    return this.save()
+    if (category_index > -1) {
+        daily_budget.acc_amount += this.amount;
+        daily_budget.aviable_amount -= this.amount;
+        daily_budget.categories[category_index].acc_amount += this.amount;
+        daily_budget.categories[category_index].aviable_amount -= this.amount;
+        daily_budget.save();
+        return this.save();
+    }
+
+    return null;
 }
 
 const model = mongoose.model('ModelTransaction', modelTransaction);
