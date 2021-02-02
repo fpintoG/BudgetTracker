@@ -19,6 +19,10 @@ var modelDailyBudget = new Schema({
         type: Number,
         default: 0
     },
+    updated: {
+        type: Boolean,
+        default: false
+    },
     categories: [{
         category_name: {
             type: String
@@ -39,8 +43,8 @@ modelDailyBudget.methods.generateDailyBudget = async function(budget, transactio
     if (transaction_date.getTime() >= budget.start_date.getTime() && 
 	   transaction_date.getTime() <= budget.end_date.getTime()) {
 		
-		last_daily_budget = await this.schema.statics.getLastDailyBudget(budget._id)
-		if (last_daily_budget) await budget.updateBudget(last_daily_budget);
+        last_daily_budgets = await this.schema.statics.getLastDailyBudget(budget._id)
+		if (last_daily_budgets) await budget.updateBudget(last_daily_budgets);
 
         this.budget_id = budget._id;
         this.date = transaction_date;
@@ -59,8 +63,10 @@ modelDailyBudget.methods.generateDailyBudget = async function(budget, transactio
 
 
 modelDailyBudget.statics.getLastDailyBudget = function(_budget_id) {
-	return mongoose.model('ModelDailyBudget').findOne({budget_id: _budget_id})
-					.sort({created_at: -1}).exec();	
+    return mongoose.model('ModelDailyBudget').find({budget_id: _budget_id},
+                                                {updated: false})
+                                                .sort({created_at: -1})
+                                                .exec();	
 }
 
 const model = mongoose.model('ModelDailyBudget', modelDailyBudget);

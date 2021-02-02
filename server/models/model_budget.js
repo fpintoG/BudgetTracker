@@ -48,17 +48,20 @@ modelBudget.index(
 );
 
 
-modelBudget.methods.updateBudget = function(last_daily_budget) {
-    this.acc_amount += last_daily_budget.acc_amount;
-    this.categories.forEach(_category => {
-        let index = last_daily_budget.categories.findIndex(
-            _daily_category =>
-                 _daily_category.category_name === _category.category_name
-        );
-        if (index > -1)
-            _category.acc_amount += last_daily_budget.categories[index].acc_amount;
-    })
-
+modelBudget.methods.updateBudget = function(last_daily_budgets) {
+    last_daily_budgets.forEach( last_daily_budget =>{
+        this.acc_amount += last_daily_budget.acc_amount;
+        this.categories.forEach(_category => {
+            let index = last_daily_budget.categories.findIndex(
+                _daily_category =>
+                     _daily_category.category_name === _category.category_name
+            );
+            if (index > -1)
+                _category.acc_amount += last_daily_budget.categories[index].acc_amount;
+        })
+        last_daily_budget.updated = true;
+        last_daily_budget.save()
+    });
     return this.save();
 }
 
