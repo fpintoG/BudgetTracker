@@ -43,7 +43,7 @@ modelDailyBudget.methods.generateDailyBudget = async function(budget, transactio
     if (transaction_date.getTime() >= budget.start_date.getTime() && 
 	   transaction_date.getTime() <= budget.end_date.getTime()) {
 		
-        last_daily_budgets = await this.schema.statics.getLastDailyBudget(budget._id)
+        last_daily_budgets = await this.schema.statics.getLastDailyBudgets(budget._id)
 		if (last_daily_budgets) await budget.updateBudget(last_daily_budgets);
 
         this.budget_id = budget._id;
@@ -62,10 +62,9 @@ modelDailyBudget.methods.generateDailyBudget = async function(budget, transactio
 }
 
 
-modelDailyBudget.statics.getLastDailyBudget = function(_budget_id) {
-    return mongoose.model('ModelDailyBudget').find({budget_id: _budget_id},
-                                                {updated: false})
-                                                .sort({created_at: -1})
+modelDailyBudget.statics.getLastDailyBudgets = function(_budget_id) {
+    return mongoose.model('ModelDailyBudget').find({budget_id: _budget_id,
+                                                updated: false})
                                                 .exec();	
 }
 

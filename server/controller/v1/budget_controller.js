@@ -1,6 +1,7 @@
 const sendErrorResponse = require('../../utils/errors');
 const mongoose = require('mongoose');
 const ModelBudget = require('../../models/model_budget');
+const ModelDailyBudget = require('../../models/model_daily_budget');
 const ModelUser = require('../../models/model_user');
 
 const getById = (req, res, next) => {
@@ -73,6 +74,9 @@ const modifyBudget = async (req, res, next) => {
         let budget = await ModelBudget.findById(mongoose.Types.ObjectId(req.body.budget_id));
         if (!budget) return sendErrorResponse(null, next, budget, 
                                         'Budget does not exist');
+        
+        last_daily_budgets = await ModelDailyBudget.getLastDailyBudgets(req.body.budget_id);
+        if (last_daily_budgets) await budget.updateBudget(last_daily_budgets);
         
         result = await budget.modifyBudget(req.body.category_start, 
                                             req.body.category_dest, 
