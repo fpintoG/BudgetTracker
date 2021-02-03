@@ -4,7 +4,7 @@ const ModelBudget = require('../../models/model_budget');
 const ModelUser = require('../../models/model_user');
 
 const getById = (req, res, next) => {
-    let id = req.params.id;  
+    let id = mongoose.Types.ObjectId(req.params.id);  
     ModelBudget.findById(id, (err, item) => {  
         if (err || !item) return sendErrorResponse(err, next, item, 
                                                     'Does not exist');      
@@ -16,7 +16,7 @@ const getById = (req, res, next) => {
 }
 
 function listByUser(req, res, next) {
-    let _user_id = req.params.user_id;
+    let _user_id = mongoose.Types.ObjectId(req.params.user_id);
     ModelBudget.find({ user_id: _user_id }, (err, items) => {  
         if (err || !items) return sendErrorResponse(err, next, item, 
                                                 'Could not find users');  
@@ -26,7 +26,6 @@ function listByUser(req, res, next) {
         });  
     });
 }
-
 
 const createBudget = async (req, res, next) => {
     try {
@@ -38,7 +37,7 @@ const createBudget = async (req, res, next) => {
             max_amount: req.body.max_amount
         }
         const user_exist = await ModelUser.exists({ _id: data.user_id });
-        if (!user_exist) sendErrorResponse(null, next, budget, 
+        if (!user_exist) return  sendErrorResponse(null, next, user_exist, 
                                         'User does not exist');
 
         let _categories = req.body.categories;
@@ -68,9 +67,32 @@ const createBudget = async (req, res, next) => {
     }
 }    
 
+
+const modifyBudget = async (req, res, next) => {
+    try {
+        let budget = await ModelBudget.findById(mongoose.Types.ObjectId(req.body.budget_id));
+        if (!budget) return sendErrorResponse(null, next, budget, 
+                                        'Budget does not exist');
+        
+        result = await budget.modifyBudget(req.body.category_start, 
+                                            req.body.category_dest, 
+                                            req.body.amount);
+        
+        res.json({
+            result: true,
+            budget: result
+        });
+
+    } catch(err) {
+        console.log(err)
+        return sendErrorResponse(err, next, null, null)
+    }
+}
+
 module.exports = {      
     getById,
     listByUser,
-    createBudget
+    createBudget,
+    modifyBudget
 };
   

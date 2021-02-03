@@ -65,5 +65,17 @@ modelBudget.methods.updateBudget = function(last_daily_budgets) {
     return this.save();
 }
 
+modelBudget.methods.modifyBudget = function(cat1, cat2, amount) {
+    let index1 = this.categories.map(_category => _category.category_name).indexOf(cat1);
+    let index2 = this.categories.map(_category => _category.category_name).indexOf(cat2);
+    let cat1_diff = this.categories[index1].max_amount - this.categories[index1].acc_amount;
+    if ((cat1_diff - amount) > 0) {
+        this.categories[index1].max_amount -= amount;
+        this.categories[index2].max_amount += amount;
+        return this.save()
+    }
+    return null;
+}
+
 const model = mongoose.model('ModelBudget', modelBudget);
 module.exports = model;
