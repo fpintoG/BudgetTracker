@@ -26,6 +26,10 @@ var modelBudget = new Schema({
         type: Number,
         default: 0
     },
+    modifications: {
+        type: Number,
+        default: 0
+    },
     categories: [{
         category_name: {
             type: String,
@@ -72,6 +76,7 @@ modelBudget.methods.modifyBudget = function(cat1, cat2, amount) {
     if ((cat1_diff - amount) > 0) {
         this.categories[index1].max_amount -= amount;
         this.categories[index2].max_amount += amount;
+        this.modifications += 1;
         return this.save()
     }
     return null;

@@ -26,8 +26,8 @@ const login = (req, res, next) => {
 
 		if (!bcrypt.compareSync(password, item.password) ){
 			return res.status(401).json({
-			result: true,
-			message: 'wronng user or password'
+				result: true,
+				message: 'Wrong user or password'
 			});
 		}
 

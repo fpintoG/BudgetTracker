@@ -16,7 +16,7 @@ const getById = (req, res, next) => {
     });
 }
 
-function listByUser(req, res, next) {
+const listByUser = (req, res, next) => {
     let _user_id = mongoose.Types.ObjectId(req.params.user_id);
     ModelBudget.find({ user_id: _user_id }, (err, items) => {  
         if (err || !items) return sendErrorResponse(err, next, item, 
@@ -31,7 +31,7 @@ function listByUser(req, res, next) {
 const createBudget = async (req, res, next) => {
     try {
         let data = {
-            user_id: mongoose.Types.ObjectId(req.body.user_id),
+            user_id: mongoose.Types.ObjectId(req.user_id),
             start_date: new Date(req.body.start_date),
             end_date: new Date(req.body.end_date),
             active: req.body.active,
@@ -42,6 +42,10 @@ const createBudget = async (req, res, next) => {
                                         'User does not exist');
 
         let _categories = req.body.categories;
+        if (!req.premium && (_categories.length > 5))
+            return  sendErrorResponse(null, next, null, 
+                                    'Non premium user can not have more than 5 categories');
+
         let unique_categories = [ ...new Set( _categories.map( _category => 
                             _category.category_name) ) ]
                             .map( category_name => 
