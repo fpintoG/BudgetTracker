@@ -46,12 +46,6 @@ var modelBudget = new Schema({
     }]
 });
 
-modelBudget.index(
-    {active: 1}, 
-    {unique: true, partialFilterExpression: {active: true}}
-);
-
-
 modelBudget.methods.updateBudget = function(lastDailyBudgets) {
     lastDailyBudgets.forEach( lastDailyBudget =>{
         this.accAmount += lastDailyBudget.accAmount;
