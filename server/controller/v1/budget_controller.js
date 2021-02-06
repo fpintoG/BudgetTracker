@@ -62,7 +62,7 @@ const checkActiveBudget = async (req, res, next) => {
 
 const createBudget = async (req, res, next) => {
     try {
-        // inicio de presupuesto debe ser desde la fecha actual en adelante
+        // starting date must be equal or higher than current date
         _startDate = new Date(req.body.start_date);  
         if (_startDate < new Date()) _startDate = new Date();
 

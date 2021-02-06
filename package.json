@@ -22,6 +22,9 @@
     "express-validator": "^6.9.2",
     "jsonwebtoken": "^8.5.1",
     "mogoose": "0.0.1-security",
-    "mongoose": "^5.11.13"
+    "mongoose": "^5.11.13",
+    "swagger-jsdoc": "^6.0.2",
+    "swagger-ui": "^3.42.0",
+    "swagger-ui-express": "^4.1.6"
   }
 }

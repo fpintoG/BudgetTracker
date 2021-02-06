@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 var cors = require('cors')
 const bcrypt = require('bcrypt');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 const routersV1 = require('./routers/v1/index');
 const app = express();
@@ -20,6 +22,29 @@ if (process.env.NODE_ENV === 'development'){
 	console.log('production env');
 	require('dotenv').config()
 }
+
+const swaggerDefinition = {
+	info: {
+	  // API informations (required)
+	  title: 'Budget tracker', // Title (required)
+	  version: '1.0.0', // Version (required)
+	  description: 'An api to manage budgets', // Description (optional)
+	},
+	host: `localhost:${process.env.PORT}`, // Host (optional)
+	basePath: '/api/v1/', // Base path (optional)
+};
+  
+// Options for the swagger docs
+const options = {
+	// Import swaggerDefinitions
+	swaggerDefinition,
+	// Path to the API docs
+	// Note that this path is relative to the current directory from which the Node.js is ran, not the application itself.
+	apis: ['./server/routers/v1/*.js'],
+};
+  
+const swaggerDocs = swaggerJsdoc(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 const URL_MONGO = process.env.URL_MONGO;
 console.log(URL_MONGO);
