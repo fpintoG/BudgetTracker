@@ -15,7 +15,7 @@ const isAuth = (req, res, next) => {
 const isAdmin = (req, res, next) => {
   	let user = req.user;
 	if(user.role === 'ADMIN_ROLE'){
-		req.user_id = user.user_id;
+		req.userId = user.userId;		
 		next();
 	}else{
 		let err = new Error('Not valid role');
@@ -26,7 +26,7 @@ const isAdmin = (req, res, next) => {
 
 const isPremium = (req, res, next) => {
 	let user = req.user;
-	req.user_id = user.user_id;
+	req.userId = user.userId;
 	req.premium = false;
 	if(user.role === 'PREMIUM_ROLE' || 
 		user.role === 'ADMIN_ROLE'){

@@ -13,8 +13,8 @@ function errorHandler(err, next, item) {
 }
 
 const listByUser = async (req, res, next) => {
-    let _user_id = req.params.user_id;
-    ModelDailyBudget.find({ user_id: _user_id }, (err, items) => {  
+    let _userId = req.params.user_id;
+    ModelDailyBudget.find({ user_id: _userId }, (err, items) => {  
         if (err || !items) return errorHandler(err, next, items);
         res.json({
             result: true,

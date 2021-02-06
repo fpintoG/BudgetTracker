@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var modelDailyBudget = new Schema({
-    budget_id: {
+    budgetId: {
         type: Schema.Types.ObjectId,
         ref: 'ModelBudget'
     },
@@ -11,11 +11,11 @@ var modelDailyBudget = new Schema({
         unique: true,
         required: true
     },
-    aviable_amount: {
+    aviableAmount: {
         type: Number,
         required: true
     },
-    acc_amount: {
+    accAmount: {
         type: Number,
         default: 0
     },
@@ -24,35 +24,35 @@ var modelDailyBudget = new Schema({
         default: false
     },
     categories: [{
-        category_name: {
+        categoryName: {
             type: String
         },
-        aviable_amount: {
+        aviableAmount: {
             type: Number,
             required: true
         },
-        acc_amount: {
+        accAmount: {
             type: Number,
             default: 0
         }
     }]    
 });
 
-modelDailyBudget.methods.generateDailyBudget = async function(budget, transaction_date) {
+modelDailyBudget.methods.generateDailyBudget = async function(budget, transactionDate) {
     // check if actual date is in budget range
-    if (transaction_date.getTime() >= budget.start_date.getTime() && 
-	   transaction_date.getTime() <= budget.end_date.getTime()) {
+    if (transactionDate.getTime() >= budget.startDate.getTime() && 
+        transactionDate.getTime() <= budget.endDate.getTime()) {
 		
-        last_daily_budgets = await this.schema.statics.getLastDailyBudgets(budget._id)
-		if (last_daily_budgets) await budget.updateBudget(last_daily_budgets);
+        lastDailyDudgets = await this.schema.statics.getLastDailyBudgets(budget._id)
+		if (lastDailyDudgets) await budget.updateBudget(lastDailyDudgets);
 
-        this.budget_id = budget._id;
-        this.date = transaction_date;
-        this.aviable_amount = budget.max_amount - budget.acc_amount;
+        this.budgetId = budget._id;
+        this.date = transactionDate;
+        this.aviableAmount = budget.maxAmount - budget.accAmount;
         // look for categories
         this.categories = budget.categories.map(_category => {
-			let category =  { category_name: _category.category_name, 
-							aviable_amount: _category.max_amount - _category.acc_amount};
+			let category =  { categoryName: _category.categoryName, 
+							aviableAmount: _category.maxAmount - _category.accAmount};
             return category;
         });
         
@@ -62,8 +62,8 @@ modelDailyBudget.methods.generateDailyBudget = async function(budget, transactio
 }
 
 
-modelDailyBudget.statics.getLastDailyBudgets = function(_budget_id) {
-    return mongoose.model('ModelDailyBudget').find({budget_id: _budget_id,
+modelDailyBudget.statics.getLastDailyBudgets = function(_budgetId) {
+    return mongoose.model('ModelDailyBudget').find({budgetId: _budgetId,
                                                 updated: false})
                                                 .exec();	
 }

@@ -32,7 +32,7 @@ const login = (req, res, next) => {
 		}
 
 		let payload ={
-			user_id: item._id,
+			userId: item._id,
 			role: item.role
 		}
 

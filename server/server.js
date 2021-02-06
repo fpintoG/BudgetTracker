@@ -78,33 +78,34 @@ mongoose.connect(URL_MONGO, {
 			user = await new ModelUser(data).save();
 			
 			data = {
-				user_id: user._id,
-				start_date: new Date('2021/01/02'),
-				end_date: new Date('2021/02/03'),
-				max_amount: 500000,
+				userId: user._id,
+				startDate: new Date('2021/01/02'),
+				endDate: new Date('2021/02/03'),
+				active: 1,
+				maxAmount: 500000,
 				categories: [
 					{
-						category_name: "comida",
-						max_amount: 200000
+						categoryName: "comida",
+						maxAmount: 200000
 					},
 					{
-						category_name: "transporte",
-						max_amount: 100000
+						categoryName: "transporte",
+						maxAmount: 100000
 					},
 					{
-						category_name: "gastos_medicos",
-						max_amount: 100000
+						categoryName: "gastos_medicos",
+						maxAmount: 100000
 					},
 					{
-						category_name: "estudios",
-						max_amount: 100000
+						categoryName: "estudios",
+						maxAmount: 100000
 					}
 				]
 			}
 		
 			let budget = await new ModelBudget(data).save();
 		
-			user.actual_budget = budget._id;
+			user.actualBudget = budget._id;
 			user.save()
 		}
 	});

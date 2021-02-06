@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var modelTransaction = new Schema({
-    daily_budget_id: {
+    dailyBudgetId: {
         type: Schema.Types.ObjectId,
         ref: 'ModelDailyBudget'
     },
@@ -20,17 +20,17 @@ var modelTransaction = new Schema({
     }
 });
 
-modelTransaction.methods.generateTransaction = function(daily_budget) {
-    const category_index = daily_budget.categories.findIndex(_category => 
-        _category.category_name === this.category   
+modelTransaction.methods.generateTransaction = function(dailyBudget) {
+    const category_index = dailyBudget.categories.findIndex(_category => 
+        _category.categoryName === this.category   
     );
 
     if (category_index > -1) {
-        daily_budget.acc_amount += this.amount;
-        daily_budget.aviable_amount -= this.amount;
-        daily_budget.categories[category_index].acc_amount += this.amount;
-        daily_budget.categories[category_index].aviable_amount -= this.amount;
-        daily_budget.save();
+        dailyBudget.accAmount += this.amount;
+        dailyBudget.aviableAmount -= this.amount;
+        dailyBudget.categories[category_index].accAmount += this.amount;
+        dailyBudget.categories[category_index].aviableAmount -= this.amount;
+        dailyBudget.save();
         return this.save();
     }
 

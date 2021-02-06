@@ -2,15 +2,15 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var modelBudget = new Schema({
-    user_id: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'ModelUser'
     },
-    start_date : {
+    startDate : {
         type: Date,
         required: true,  
     },
-    end_date : {
+    endDate : {
         type: Date,
         required: true,  
     },
@@ -18,11 +18,11 @@ var modelBudget = new Schema({
         type: Boolean,
         default: false
     },
-    max_amount: {
+    maxAmount: {
       type: Number,
       required: true
     },
-    acc_amount: {
+    accAmount: {
         type: Number,
         default: 0
     },
@@ -31,15 +31,15 @@ var modelBudget = new Schema({
         default: 0
     },
     categories: [{
-        category_name: {
+        categoryName: {
             type: String,
             required: true
         },
-        max_amount: {
+        maxAmount: {
             type: Number,
             required: true
         },
-        acc_amount: {
+        accAmount: {
             type: Number,
             default: 0
         }
@@ -52,30 +52,30 @@ modelBudget.index(
 );
 
 
-modelBudget.methods.updateBudget = function(last_daily_budgets) {
-    last_daily_budgets.forEach( last_daily_budget =>{
-        this.acc_amount += last_daily_budget.acc_amount;
+modelBudget.methods.updateBudget = function(lastDailyBudgets) {
+    lastDailyBudgets.forEach( lastDailyBudget =>{
+        this.accAmount += lastDailyBudget.accAmount;
         this.categories.forEach(_category => {
-            let index = last_daily_budget.categories.findIndex(
-                _daily_category =>
-                     _daily_category.category_name === _category.category_name
+            let index = lastDailyBudget.categories.findIndex(
+                _dailyCategory =>
+                     _dailyCategory.categoryAame === _category.categoryName
             );
             if (index > -1)
-                _category.acc_amount += last_daily_budget.categories[index].acc_amount;
+                _category.accAmount += lastDailyBudget.categories[index].accAmount;
         })
-        last_daily_budget.updated = true;
-        last_daily_budget.save()
+        lastDailyBudget.updated = true;
+        lastDailyBudget.save()
     });
     return this.save();
 }
 
 modelBudget.methods.modifyBudget = function(cat1, cat2, amount) {
-    let index1 = this.categories.map(_category => _category.category_name).indexOf(cat1);
-    let index2 = this.categories.map(_category => _category.category_name).indexOf(cat2);
-    let cat1_diff = this.categories[index1].max_amount - this.categories[index1].acc_amount;
-    if ((cat1_diff - amount) > 0) {
-        this.categories[index1].max_amount -= amount;
-        this.categories[index2].max_amount += amount;
+    let index1 = this.categories.map(_category => _category.categoryName).indexOf(cat1);
+    let index2 = this.categories.map(_category => _category.categoryName).indexOf(cat2);
+    let cat1Diff = this.categories[index1].maxAmount - this.categories[index1].accAmount;
+    if ((cat1Diff - amount) > 0) {
+        this.categories[index1].maxAmount -= amount;
+        this.categories[index2].maxAmount += amount;
         this.modifications += 1;
         return this.save()
     }
@@ -85,8 +85,8 @@ modelBudget.methods.modifyBudget = function(cat1, cat2, amount) {
 
 modelBudget.methods.checkActiveBudget = function() {    
     let actualDate = new Date();
-    if (actualDate < this.start_date.getTime() ||
-        actualDate > this.end_date.getTime()) {
+    if (actualDate < this.startDate.getTime() ||
+        actualDate > this.endDate.getTime()) {
         this.active = false; 
     }
     this.save();

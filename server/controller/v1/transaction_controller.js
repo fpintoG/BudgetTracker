@@ -7,8 +7,8 @@ const ModelDailyBudget = require('../../models/model_daily_budget');
 const ModelTransaction = require('../../models/model_transaction');
 
 function listByDailyBudget(req, res, next) {
-    let _daily_budget_id = req.params.daily_budget_id;
-    ModelTransaction.find({ daily_budget_id: _daily_budget_id }, (err, items) => {
+    let _dailyBudgetId = req.params.dailyBudgetId;
+    ModelTransaction.find({ dailyBudgetId: _dailyBudgetId }, (err, items) => {
         if (err || !items)
             return sendErrorResponse(err, next, items, 
                                         'Does not exist');
@@ -21,39 +21,39 @@ function listByDailyBudget(req, res, next) {
 
 const makeTransaction = async (req, res, next) => {
     try {
-        let user_id = mongoose.Types.ObjectId(req.user_id);
-        let user = await ModelUser.findById(user_id).exec(); 
+        let userId = mongoose.Types.ObjectId(req.user.userId);
+        let user = await ModelUser.findById(userId).exec(); 
         if (!user) return sendErrorResponse(null, next, user, 
                                          'Could not find user');
             
-        let budget = await ModelBudget.findById(user.actual_budget).exec();
+        let budget = await ModelBudget.findById(user.actualBudget).exec();
         if (!budget) return sendErrorResponse(null, next, budget,
                                         'User has no active budget');
 
-        let transaction_date = new Date(req.body.transaction_date);
-        let daily_budget = await ModelDailyBudget.findOne({
-            budget_id: budget._id,
+        let transactionDate = new Date(req.body.transaction_date);
+        let dailyBudget = await ModelDailyBudget.findOne({
+            budgetId: budget._id,
             date: {
-                $gte: startOfDay(transaction_date),
-                $lte: endOfDay(transaction_date)
+                $gte: startOfDay(transactionDate),
+                $lte: endOfDay(transactionDate)
             }
         }).exec(); 
 
-        if (!daily_budget) {
-            daily_budget = await new ModelDailyBudget()
-                                    .generateDailyBudget(budget, transaction_date);
-            if (!daily_budget) return sendErrorResponse(null, next, daily_budget,
+        if (!dailyBudget) {
+            dailyBudget = await new ModelDailyBudget()
+                                    .generateDailyBudget(budget, transactionDate);
+            if (!dailyBudget) return sendErrorResponse(null, next, dailyBudget,
                                                 'User could not creaate daily budget');
         }
 
         let data = {
-            daily_budget_id : daily_budget._id,
-            date : transaction_date,
+            dailyBudgetId : dailyBudget._id,
+            date : transactionDate,
             amount : req.body.amount,
             category : req.body.category
         }
 
-        let tran = await new ModelTransaction(data).generateTransaction(daily_budget);
+        let tran = await new ModelTransaction(data).generateTransaction(dailyBudget);
         if (!tran) return sendErrorResponse(null, next, tran,
                                     'Transaction not saved');
         
@@ -63,7 +63,7 @@ const makeTransaction = async (req, res, next) => {
         });
 
     } catch (err) {
-        console.log(err);
+        console.log(err);SSS
         return sendErrorResponse(err, next, null, null);
     }
 }

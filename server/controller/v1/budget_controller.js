@@ -17,8 +17,8 @@ const getById = (req, res, next) => {
 }
 
 const listByUser = (req, res, next) => {
-    let _user_id = mongoose.Types.ObjectId(req.params.user_id);
-    ModelBudget.find({ user_id: _user_id }, (err, items) => {  
+    let _userId = mongoose.Types.ObjectId(req.params.user_id);
+    ModelBudget.find({ user_id: _userId }, (err, items) => {  
         if (err || !items) return sendErrorResponse(err, next, item, 
                                                 'Could not find users');  
         res.json({
@@ -29,14 +29,14 @@ const listByUser = (req, res, next) => {
 }
 
 const getActualBudgetId = (req, res, next) => {
-    let userId = mongoose.Types.ObjectId(req.user_id);
+    let userId = mongoose.Types.ObjectId(req.userId);
     
     ModelUser.findById(userId)
     .exec( (err, user) => {
         if (err || !user) 
             return sendErrorResponse(err, next, user, 
                                     'Could not find user');
-        req.actualBudgetId = user.actual_budget;
+        req.actualBudgetId = user.actualBudget;
         next();
     });
 }
@@ -49,6 +49,7 @@ const checkActiveBudget = async (req, res, next) => {
             if (activeBudget) 
                 isActive = await activeBudget.checkActiveBudget();
         }
+
         if (isActive)
             return  sendErrorResponse(null, next, null, 
                     'Found another active budget for this period');
@@ -66,11 +67,11 @@ const createBudget = async (req, res, next) => {
         if (_startDate < new Date()) _startDate = new Date();
 
         let data = {
-            user_id: mongoose.Types.ObjectId(req.user_id),
-            start_date: _startDate,
-            end_date: new Date(req.body.end_date),
+            userId: mongoose.Types.ObjectId(req.userId),
+            startDate: _startDate,
+            endDate: new Date(req.body.end_date),
             active: req.body.active,
-            max_amount: req.body.max_amount
+            maxAmount: req.body.max_amount
         }
 
         let _categories = req.body.categories;
@@ -78,20 +79,23 @@ const createBudget = async (req, res, next) => {
             return  sendErrorResponse(null, next, null, 
                                     'Non premium user can not have more than 5 categories');
 
-        let unique_categories = [ ...new Set( _categories.map( _category => 
+        let uniqueCategories = [ ...new Set( _categories.map( _category => 
                             _category.category_name) ) ]
                             .map( category_name => 
                                 { return _categories.find(_category => 
                                     _category.category_name === category_name) } );
-        data['categories'] = unique_categories;
+        data['categories'] = uniqueCategories.map(_category => {
+            return {'categoryName': _category.category_name, 
+                    'maxAmount': _category.max_amount}
+        });
 
         let modelBudget = new ModelBudget( data );
         budget = await modelBudget.save();
         if (!budget) return sendErrorResponse(null, next, budget, 
                                             'Could not save budget');
 
-        await ModelUser.updateOne({ _id: data.user_id }, 
-                                { actual_budget: budget._id });
+        await ModelUser.updateOne({ _id: data.userId }, 
+                                { actualBudget: budget._id });
 
         res.json({
             result: true,

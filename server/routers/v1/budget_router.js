@@ -13,6 +13,8 @@ router.post('/budget', [isAuth,
                         isPremium, 
                         getActualBudgetId, 
                         checkActiveBudget], createBudget);
-router.post('/changeBudget', [isAuth, getActualBudgetId], modifyBudget);
+router.post('/changeBudget', [isAuth, 
+                            isPremium, 
+                            getActualBudgetId], modifyBudget);
 
 module.exports = router;

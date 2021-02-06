@@ -23,7 +23,7 @@ var modelUser = new Schema({
 		type: Boolean,
 		default: true
     },
-    actual_budget: {
+    actualBudget: {
 		type: Schema.Types.ObjectId,
 		ref: 'ModelBudget'
     }
