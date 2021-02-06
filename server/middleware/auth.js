@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 
-let isAuth = (req, res, next) => {
+const isAuth = (req, res, next) => {
   	let token = req.get('Authorization');  
 	jwt.verify(token, process.env.SEED, (err, decoded) => {
 		if(err){
@@ -12,7 +12,7 @@ let isAuth = (req, res, next) => {
 	});
 }
 
-let isAdmin = (req, res, next) => {
+const isAdmin = (req, res, next) => {
   	let user = req.user;
 	if(user.role === 'ADMIN_ROLE'){
 		req.user_id = user.user_id;
@@ -24,7 +24,7 @@ let isAdmin = (req, res, next) => {
 	}
 }
 
-let isPremium = (req, res, next) => {
+const isPremium = (req, res, next) => {
 	let user = req.user;
 	req.user_id = user.user_id;
 	req.premium = false;
@@ -34,6 +34,7 @@ let isPremium = (req, res, next) => {
 	}
   	next();
 }
+
 
 module.exports = {
 	isAuth,

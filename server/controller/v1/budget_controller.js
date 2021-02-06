@@ -28,18 +28,50 @@ const listByUser = (req, res, next) => {
     });
 }
 
+const getActualBudgetId = (req, res, next) => {
+    let userId = mongoose.Types.ObjectId(req.user_id);
+    
+    ModelUser.findById(userId)
+    .exec( (err, user) => {
+        if (err || !user) 
+            return sendErrorResponse(err, next, user, 
+                                    'Could not find user');
+        req.actualBudgetId = user.actual_budget;
+        next();
+    });
+}
+
+const checkActiveBudget = async (req, res, next) => {
+    try {
+        let isActive = false;
+        if (req.actualBudgetId) {
+            let activeBudget = await ModelBudget.findById(req.actualBudgetId).exec();
+            if (activeBudget) 
+                isActive = await activeBudget.checkActiveBudget();
+        }
+        if (isActive)
+            return  sendErrorResponse(null, next, null, 
+                    'Found another active budget for this period');
+        next();
+    } catch {
+        console.log(err)
+        return sendErrorResponse(err, next, null, null);
+    }
+}
+
 const createBudget = async (req, res, next) => {
     try {
+        // inicio de presupuesto debe ser desde la fecha actual en adelante
+        _startDate = new Date(req.body.start_date);  
+        if (_startDate < new Date()) _startDate = new Date();
+
         let data = {
             user_id: mongoose.Types.ObjectId(req.user_id),
-            start_date: new Date(req.body.start_date),
+            start_date: _startDate,
             end_date: new Date(req.body.end_date),
             active: req.body.active,
             max_amount: req.body.max_amount
         }
-        const user_exist = await ModelUser.exists({ _id: data.user_id });
-        if (!user_exist) return  sendErrorResponse(null, next, user_exist, 
-                                        'User does not exist');
 
         let _categories = req.body.categories;
         if (!req.premium && (_categories.length > 5))
@@ -75,12 +107,16 @@ const createBudget = async (req, res, next) => {
 
 const modifyBudget = async (req, res, next) => {
     try {
-        let budget = await ModelBudget.findById(mongoose.Types.ObjectId(req.body.budget_id));
+        if (!req.actualBudgetId)
+            return sendErrorResponse(null, next, null, 
+                                'Could not find active budget asociated with user');
+        
+        let budget = await ModelBudget.findById(mongoose.Types.ObjectId(req.actualBudgetId)).exec();
         if (!budget) return sendErrorResponse(null, next, budget, 
                                         'Budget does not exist');
         
-        last_daily_budgets = await ModelDailyBudget.getLastDailyBudgets(req.body.budget_id);
-        if (last_daily_budgets) await budget.updateBudget(last_daily_budgets);
+        lastDailyBudgets = await ModelDailyBudget.getLastDailyBudgets(req.actualBudgetId);
+        if (lastDailyBudgets) await budget.updateBudget(lastDailyBudgets);
         
         result = await budget.modifyBudget(req.body.category_start, 
                                             req.body.category_dest, 
@@ -100,6 +136,8 @@ const modifyBudget = async (req, res, next) => {
 module.exports = {      
     getById,
     listByUser,
+    getActualBudgetId,
+    checkActiveBudget,
     createBudget,
     modifyBudget
 };

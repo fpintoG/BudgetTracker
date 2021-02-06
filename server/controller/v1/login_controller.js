@@ -59,7 +59,7 @@ const login = (req, res, next) => {
 
 const signin = (req, res, next) => {
 
-	let salt = parseInt(process.env.SALTH)
+	let salt = parseInt(process.env.SALT)
 
 	let data = {
 		nombre : req.body.nombre,

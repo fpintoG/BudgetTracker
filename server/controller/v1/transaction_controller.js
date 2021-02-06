@@ -21,7 +21,7 @@ function listByDailyBudget(req, res, next) {
 
 const makeTransaction = async (req, res, next) => {
     try {
-        let user_id = mongoose.Types.ObjectId(req.body.user_id);
+        let user_id = mongoose.Types.ObjectId(req.user_id);
         let user = await ModelUser.findById(user_id).exec(); 
         if (!user) return sendErrorResponse(null, next, user, 
                                          'Could not find user');

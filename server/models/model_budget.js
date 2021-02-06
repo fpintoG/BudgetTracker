@@ -82,5 +82,16 @@ modelBudget.methods.modifyBudget = function(cat1, cat2, amount) {
     return null;
 }
 
+
+modelBudget.methods.checkActiveBudget = function() {    
+    let actualDate = new Date();
+    if (actualDate < this.start_date.getTime() ||
+        actualDate > this.end_date.getTime()) {
+        this.active = false; 
+    }
+    this.save();
+    return this.active;
+}
+
 const model = mongoose.model('ModelBudget', modelBudget);
 module.exports = model;

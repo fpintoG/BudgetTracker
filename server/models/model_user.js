@@ -17,7 +17,7 @@ var modelUser = new Schema({
     },
     role: {
 		type: String,
-		default: 'USER_ROLE'
+		default: 'NORMAL_ROLE'
     },
     active: {
 		type: Boolean,
