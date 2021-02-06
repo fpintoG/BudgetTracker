@@ -118,6 +118,10 @@ const modifyBudget = async (req, res, next) => {
         let budget = await ModelBudget.findById(mongoose.Types.ObjectId(req.actualBudgetId)).exec();
         if (!budget) return sendErrorResponse(null, next, budget, 
                                         'Budget does not exist');
+
+        if (!req.premium && (budget.modifications > 10))
+            return  sendErrorResponse(null, next, null, 
+                                    'Non premium user can not make more than 10 budget modifications');
         
         lastDailyBudgets = await ModelDailyBudget.getLastDailyBudgets(req.actualBudgetId);
         if (lastDailyBudgets) await budget.updateBudget(lastDailyBudgets);
@@ -126,6 +130,9 @@ const modifyBudget = async (req, res, next) => {
                                             req.body.category_dest, 
                                             req.body.amount);
         
+        if (!result) return sendErrorResponse(null, next, result, 
+                                            'Not valid modification');
+            
         res.json({
             result: true,
             budget: result
