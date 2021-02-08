@@ -8,7 +8,6 @@ var modelDailyBudget = new Schema({
     },
     date: {
         type: Date,
-        unique: true,
         required: true
     },
     aviableAmount: {
@@ -37,6 +36,8 @@ var modelDailyBudget = new Schema({
         }
     }]    
 });
+
+modelDailyBudget.index({ date: 1, budgetId: 1}, { unique: true });
 
 modelDailyBudget.methods.generateDailyBudget = async function(budget, transactionDate) {
     // check if actual date is in budget range

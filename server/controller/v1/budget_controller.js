@@ -87,9 +87,10 @@ const modifyBudget = async (req, res, next) => {
             return sendErrorResponse(null, next, null, 
                                 'Could not find active budget asociated with user');
         
-        let budget = await ModelBudget.findById(mongoose.Types.ObjectId(req.actualBudgetId)).exec();
+        let budgetId = mongoose.Types.ObjectId(req.actualBudgetId)
+        let budget = await ModelBudget.findOne({_id: budgetId, active: 1}).exec();
         if (!budget) return sendErrorResponse(null, next, budget, 
-                                        'Budget does not exist');
+                                        'Active budget does not exist');
 
         if (!req.premium && (budget.modifications > 10))
             return  sendErrorResponse(null, next, null, 
@@ -153,7 +154,7 @@ const deactivateBudget = async (req, res, next) => {
     try {
         let budgetId = mongoose.Types.ObjectId(req.actualBudgetId)
         await ModelBudget.updateOne({_id: budgetId}, 
-                                    { active: 0 })
+                                    { active: 0, endDate: new Date()});
         
         res.json({
             result: true,

@@ -16,36 +16,25 @@ const listByActualBudget = (req, res, next) => {
     });
 }
 
-
-/*
-* Param budget date
-*/
-const addBudgetDate = (req, res, next, date) => {
-    req.budgetDate = new Date(date.replace(/-/g, '\/'));
-    next();
-}
-
-
 const getByDate = (req, res, next) => {
-    let budgetId = mongoose.Types.ObjectId(req.budgetId);
-    ModelDailyBudget.findOne({budgetId: budgetId, date: {
-                            $gte: startOfDay(req.budgetDate),
-                            $lte: endOfDay(req.budgetDate)
-                        }
+    ModelDailyBudget.find({budgetId: {$in: req.budgetIds}, 
+                            date: {
+                                $gte: startOfDay(req.startDate),
+                                $lte: endOfDay(req.endDate)
+                            }
     })
-    .exec( (err, dailyBudget) => {
-        if (err || !dailyBudget) 
-            return sendErrorResponse(err, next, dailyBudget, 
+    .exec( (err, dailyBudgets) => {
+        if (err || !dailyBudgets) 
+            return sendErrorResponse(err, next, dailyBudgets, 
                                     'Could not find daily budget for this date');
         res.json({
             result: true,
-            data: dailyBudget
+            data: dailyBudgets
         });  
     });
 }
 
 module.exports = {
     listByActualBudget,
-    addBudgetDate,
     getByDate,
 };

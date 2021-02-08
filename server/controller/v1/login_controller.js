@@ -20,7 +20,6 @@ const login = (req, res, next) => {
 	let email = req.body.email;
 	let password = req.body.password;  
 
-	console.log(email)
 	ModelUser.findOne({ email: email}, (err, item) =>{
 		if(err || !item )
 			return errorHandler(err, next, item)

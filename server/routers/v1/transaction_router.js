@@ -1,15 +1,12 @@
 const express = require('express');
 
-const { addTransactionsDate, 
-        listByDailyBudget, 
+const { listByDailyBudget, 
         makeTransaction } = require('../../controller/v1/transaction_controller');
 const { isAuth, isPremium } = require('../../middleware/auth');
-const { getBudgetIdByDate } = require('../../middleware/budget')
+const { getActualBudgetId, getBudgetIdByDate } = require('../../middleware/budget')
 const { findDailyBudgetId } = require('../../middleware/dailyBudget');
 
 const router = express.Router();
-
-router.param('transactionDate', addTransactionsDate)
 
 /**
  * @swagger
@@ -48,33 +45,41 @@ router.param('transactionDate', addTransactionsDate)
  *       200:
  *         description: Transaction sucessfully added to daily budget.
  *       400:
- *         description: There was a problem alidating transaction data.            
+ *         description: There was a problem validating transaction data.            
  */
-router.post('/transaction', isAuth, makeTransaction);
+router.post('/transaction', [isAuth, 
+                             isPremium, 
+                             getActualBudgetId], makeTransaction);
 
 /**
  * @swagger
  *
- * /transactions/{transactionDate}:
+ * /transactions:
  *   get:
- *     summary: Get list of transactions by date for that user (Date must be in format YYYY-MM-DD).
+ *     summary: Get transactions of autentificated user in a date range (Date must be in format YYYY-MM-DD).
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: transactionDate
+ *       - in: query
+ *         name: start_date
+ *         type: string
  *         required: true
  *         schema:
- *           type: string
- *           example: 2021-02-17
+ *           example: 2021-01-01  
+ *       - in: query
+ *         name: end_date
+ *         type: string
+ *         required: true  
+ *         schema:
+ *           example: 2021-04-01 
  *     responses:
  *       200:
- *         description: Returns list of transactions for that date.
+ *         description: Transaction data sucessfully returned.
  *       400:
- *         description: There was a problem finding transactions for that date.             
+ *         description: There was a problem finding transactions.             
  */
-router.get('/transactions/:transactionDate', [isAuth, 
-                                             isPremium, 
-                                             getBudgetIdByDate,
-                                             findDailyBudgetId], listByDailyBudget);
+router.get('/transactions', [isAuth, 
+							isPremium, 
+							getBudgetIdByDate,
+							findDailyBudgetId], listByDailyBudget);
 module.exports = router;

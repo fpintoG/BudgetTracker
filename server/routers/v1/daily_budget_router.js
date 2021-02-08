@@ -1,13 +1,10 @@
 const express = require('express');
 const { listByActualBudget, 
-        addBudgetDate, 
         getByDate } = require('../../controller/v1/daily_budget_controller');
 const { getActualBudgetId, getBudgetIdByDate } = require('../../middleware/budget')
 const { isAuth, isPremium } = require('../../middleware/auth');
 
 const router = express.Router();
-
-router.param('budgetDate', addBudgetDate)
 
 /**
  * @swagger
@@ -31,27 +28,33 @@ router.get('/currentDailyBudgets', [isAuth,
 /**
  * @swagger
  *
- * /dailyBudget/{budgetDate}:
+ * /dailyBudgets:
  *   get:
- *     summary: Get daily budget by date for that user (Date must be in format YYYY-MM-DD).
+ *     summary: Get daily budgets of autentificated user in a date range (Date must be in format YYYY-MM-DD).
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: budgetDate
+ *       - in: query
+ *         name: start_date
+ *         type: string
  *         required: true
  *         schema:
- *           type: string
- *           example: 2021-02-17
+ *           example: 2021-01-01  
+ *       - in: query
+ *         name: end_date
+ *         type: string
+ *         required: true  
+ *         schema:
+ *           example: 2021-04-01 
  *     responses:
  *       200:
  *         description: Daily budget data sucessfully returned.
  *       400:
  *         description: There was a problem finding daily budget.             
  */
-router.get('/dailyBudget/:budgetDate', [isAuth, 
-                                        isPremium, 
-                                        getBudgetIdByDate], getByDate);
+router.get('/dailyBudgets', [isAuth, 
+							isPremium, 
+							getBudgetIdByDate], getByDate);
 
 
 

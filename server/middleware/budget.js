@@ -17,14 +17,18 @@ const getActualBudgetId = (req, res, next) => {
 
 const getBudgetIdByDate = (req, res, next) => {
     let userId = mongoose.Types.ObjectId(req.userId);
-    ModelBudget.findOne({userId: userId,
-                        startDate: {"$lt": req.budgetDate},
-                        endDate: {"$gte": req.budgetDate}})
-    .exec( (err, budget) => {
-        if (err || !budget) 
-            return sendErrorResponse(err, next, budget, 
-                                    'Could not find budget');
-        req.budgetId = budget._id;
+    let start = new Date(req.query.start_date.replace(/-/g, '\/'));
+    let end = new Date(req.query.end_date.replace(/-/g, '\/'));
+    ModelBudget.find({userId: userId,
+                    startDate: {"$gte": start},
+                    endDate: {"$lt": end}})
+    .exec( (err, budgets) => {
+        if (err || !budgets) 
+            return sendErrorResponse(err, next, budgets, 
+                                    'Could not find budgets');
+        req.budgetIds = budgets.map(budget => budget._id);
+        req.startDate = start;
+        req.endDate = end;
         next();
     });
 }
