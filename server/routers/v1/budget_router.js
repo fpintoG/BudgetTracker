@@ -1,51 +1,67 @@
 const express = require('express');
+const { createBudget, 
+        modifyBudget,
+        getActualBudget,
+	    getBugdetByRange,
+		deactivateBudget } = require('../../controller/v1/budget_controller');
 const { getActualBudgetId, 
-        checkActiveBudget,
-        createBudget, 
-        modifyBudget } = require('../../controller/v1/budget_controller');
+	   checkActiveBudget } = require('../../middleware/budget')
 const { isAuth, 
         isAdmin, 
         isPremium } = require('../../middleware/auth');
 
 const router = express.Router();
 
-
-
 /**
  * @swagger
  *
  * /budget:
  *   post:
- *     description: Creates a new budget if it is a valid one.
- *     produces:
+ *     summary: Create a new budget if it is a valid one (Date format YYYY/MM/DD).
+ *     consumes:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - name: start_date
- *         in: formData
- *         required: true
- *         type: string
- *       - name: end_date
- *         in: formData
- *         required: true
- *         type: string
- *       - name: max_amount
- *         in: formData
- *         required: true
- *         type: integer   
- *       - name: categories 
- *         in: body     
- *         description: List of categories that will be added to budget.
- *         required: true
+ *       - name: budget
+ *         in: body
  *         schema:
- *           type: array           
- *           items:
- *             - name: category_name
+ *           type: object
+ *           required: 
+ *             - start_date
+ *             - end_date
+ *             - categories
+ *           properties:
+ *             start_date:
  *               type: string
- *             - name: max_amount
- *               type: integer
+ *             end_date:
+ *               type: string
+ *             categories:
+ *               type: array
+ *               items:
+ *                 category_name:
+ *                   type: string
+ *                 max_amount:
+ *                   type: integer     
+ *           example:
+ *             start_date: 2021/02/05
+ *             end_date: 2021/03/01
+ *             categories: 
+ *               - category_name: comida
+ *                 max_amount: 200000
+ *               - category_name: transporte
+ *                 max_amount: 100000
+ *               - category_name: deporte
+ *                 max_amount: 100000
+ *               - category_name: arriendo
+ *                 max_amount: 300000
+ *               - category_name: estudios
+ *                 max_amount: 100000 
+ *               - category_name: imprevistos
+ *                 max_amount: 200000 
  *     responses:
  *       200:
- *         description: Budget suscessfully added.
+ *         description: Budget sucessfully added.
  *       400:
  *         description: There was a problem validating budget.             
  */
@@ -59,30 +75,104 @@ router.post('/budget', [isAuth,
  *
  * /modifyBudget:
  *   post:
- *     description: It allows making a transaction between categories disponible amounts.
- *     produces:
+ *     summary: Take disponible amount from one category to another.
+ *     consumes:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - name: category_start
- *         in: formData
- *         required: true
- *         type: string
- *       - name: category_end
- *         in: formData
- *         required: true
- *         type: string
- *       - name: amount
- *         in: formData
- *         required: true
- *         type: integer  
+ *       - name: modify
+ *         in: body
+ *         schema:
+ *           type: object
+ *           required: 
+ *             - category_start
+ *             - category_dest
+ *             - amount
+ *           properties:
+ *             category_start:
+ *               type: string
+ *             category_dest:
+ *               type: string
+ *             amount:
+ *               type: integer
+ *           example:
+ *              category_start: transporte
+ *              category_dest: comida
+ *              amount: 10000
  *     responses:
  *       200:
- *         description: Budget suscessfully updated.
+ *         description: Budget sucessfully updated.
  *       400:
  *         description: There was a problem validating budget update.             
  */
 router.post('/modifyBudget', [isAuth, 
                             isPremium, 
                             getActualBudgetId], modifyBudget);
+
+/**
+ * @swagger
+ *
+ * /budget:
+ *   get:
+ *     summary: Get actual or last budget asociated with the user.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Budget data sucessfully returned.
+ *       400:
+ *         description: There was a problem finding budget.             
+ */
+router.get('/budget', [isAuth, 
+					   isPremium, 
+					   getActualBudgetId], getActualBudget);
+
+/**
+ * @swagger
+ *
+ * /budgets:
+ *   get:
+ *     summary: Get budgets in a date range (Date must be in format YYYY-MM-DD).
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: start_date
+ *         type: string
+ *         required: true
+ *         schema:
+ *           example: 2021-01-01  
+ *       - in: query
+ *         name: end_date
+ *         type: string
+ *         required: true  
+ *         schema:
+ *           example: 2021-04-01 	
+ *     responses:
+ *       200:
+ *         description: Budget data sucessfully returned.
+ *       400:
+ *         description: Could not find budgets in this range.             
+ */
+router.get('/budgets', [isAuth, isPremium], getBugdetByRange);
+
+/**
+ * @swagger
+ *
+ * /budget:
+ *   delete:
+ *     summary: Deactivate actual or last budget asociated with the user.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Budget data sucessfully deactivate.
+ *       400:
+ *         description: There was a problem finding budget.             
+ */
+router.delete('/budget', [isAuth, 
+					      isPremium, 
+					      getActualBudgetId], deactivateBudget);
 
 module.exports = router;

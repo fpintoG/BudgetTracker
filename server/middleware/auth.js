@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken');
 
 const isAuth = (req, res, next) => {
-  	let token = req.get('Authorization');  
+  	const token = req.get('Authorization').split(' ')[1];  
 	jwt.verify(token, process.env.SEED, (err, decoded) => {
 		if(err){
 			err.statusCode = 401;

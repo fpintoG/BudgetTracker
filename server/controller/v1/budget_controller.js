@@ -17,10 +17,10 @@ const getById = (req, res, next) => {
 }
 
 const listByUser = (req, res, next) => {
-    let _userId = mongoose.Types.ObjectId(req.params.user_id);
-    ModelBudget.find({ user_id: _userId }, (err, items) => {  
+    let userId = mongoose.Types.ObjectId(req.userId);
+    ModelBudget.find({ user_id: userId }, (err, items) => {  
         if (err || !items) return sendErrorResponse(err, next, item, 
-                                                'Could not find users');  
+                                                'Could not find user');  
         res.json({
             result: true,
             data: items
@@ -28,51 +28,11 @@ const listByUser = (req, res, next) => {
     });
 }
 
-const getActualBudgetId = (req, res, next) => {
-    let userId = mongoose.Types.ObjectId(req.userId);
-    
-    ModelUser.findById(userId)
-    .exec( (err, user) => {
-        if (err || !user) 
-            return sendErrorResponse(err, next, user, 
-                                    'Could not find user');
-        req.actualBudgetId = user.actualBudget;
-        next();
-    });
-}
-
-const checkActiveBudget = async (req, res, next) => {
-    try {
-        let isActive = false;
-        if (req.actualBudgetId) {
-            let activeBudget = await ModelBudget.findById(req.actualBudgetId).exec();
-            if (activeBudget) 
-                isActive = await activeBudget.checkActiveBudget();
-        }
-
-        if (isActive)
-            return  sendErrorResponse(null, next, null, 
-                    'Found another active budget for this period');
-        next();
-    } catch {
-        console.log(err)
-        return sendErrorResponse(err, next, null, null);
-    }
-}
-
 const createBudget = async (req, res, next) => {
     try {
         // starting date must be equal or higher than current date
         _startDate = new Date(req.body.start_date);  
         if (_startDate < new Date()) _startDate = new Date();
-
-        let data = {
-            userId: mongoose.Types.ObjectId(req.userId),
-            startDate: _startDate,
-            endDate: new Date(req.body.end_date),
-            active: req.body.active,
-            maxAmount: req.body.max_amount
-        }
 
         let _categories = req.body.categories;
         if (!req.premium && (_categories.length > 5))
@@ -84,10 +44,22 @@ const createBudget = async (req, res, next) => {
                             .map( category_name => 
                                 { return _categories.find(_category => 
                                     _category.category_name === category_name) } );
-        data['categories'] = uniqueCategories.map(_category => {
-            return {'categoryName': _category.category_name, 
-                    'maxAmount': _category.max_amount}
-        });
+        
+        let fixedCategories = uniqueCategories.map(_category => {
+                                return {'categoryName': _category.category_name, 
+                                        'maxAmount': _category.max_amount}
+                            });
+
+        let maxAmount = fixedCategories.map(a => a.maxAmount)
+                                       .reduce((acc, val) => acc + val, 0);
+        let data = {
+            userId: mongoose.Types.ObjectId(req.userId),
+            startDate: _startDate,
+            endDate: new Date(req.body.end_date),
+            active: 1,
+            maxAmount: maxAmount,
+            categories: fixedCategories,
+        }
 
         let modelBudget = new ModelBudget( data );
         budget = await modelBudget.save();
@@ -99,7 +71,7 @@ const createBudget = async (req, res, next) => {
 
         res.json({
             result: true,
-            budget: budget
+            data: budget
         });
 
     } catch(err) {
@@ -135,9 +107,58 @@ const modifyBudget = async (req, res, next) => {
             
         res.json({
             result: true,
-            budget: result
+            data: result
         });
 
+    } catch(err) {
+        console.log(err)
+        return sendErrorResponse(err, next, null, null)
+    }
+}
+
+
+const getActualBudget = (req, res, next) => {
+    let budgetId = mongoose.Types.ObjectId(req.actualBudgetId)
+    ModelBudget.findById(budgetId)
+    .exec( (err, budget) => {
+        if (err || !budget) 
+            return sendErrorResponse(err, next, budget, 
+                                    'Could not find budget');
+        res.json({
+            result: true,
+            data: budget
+        });
+    });
+}
+
+const getBugdetByRange = (req, res, next) => {
+    let userId = mongoose.Types.ObjectId(req.userId);
+    let start = new Date(req.query.start_date);
+    let end = new Date(req.query.end_date);
+    ModelBudget.find({userId: userId, 
+                      startDate: {"$gte": start}, 
+                      endDate: {"$lt": end}})
+    .exec((err, budgets) => {
+        if (err || !budgets) 
+            return sendErrorResponse(err, next, budgets, 
+                                    'Could not find budget in this date range');
+        res.json({
+            result: true,
+            data: budgets
+        });
+    });    
+}
+
+const deactivateBudget = async (req, res, next) => {
+    try {
+        let budgetId = mongoose.Types.ObjectId(req.actualBudgetId)
+        await ModelBudget.updateOne({_id: budgetId}, 
+                                    { active: 0 })
+        
+        res.json({
+            result: true,
+            data: 'Budget no longer active'
+        });
     } catch(err) {
         console.log(err)
         return sendErrorResponse(err, next, null, null)
@@ -147,9 +168,10 @@ const modifyBudget = async (req, res, next) => {
 module.exports = {      
     getById,
     listByUser,
-    getActualBudgetId,
-    checkActiveBudget,
     createBudget,
-    modifyBudget
+    modifyBudget,
+    getActualBudget,
+    getBugdetByRange,
+    deactivateBudget,
 };
   

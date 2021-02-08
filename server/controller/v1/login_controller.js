@@ -9,8 +9,8 @@ function errorHandler(err, next, item) {
 		return next(err);
 	}
 	if (!item) {
-		const error = new Error('wronng user or password');
-		error.statusCode = 500;
+		const error = new Error('Wrong user or password');
+		error.statusCode = 401;
 		return next(error);
 	}
 }
@@ -20,6 +20,7 @@ const login = (req, res, next) => {
 	let email = req.body.email;
 	let password = req.body.password;  
 
+	console.log(email)
 	ModelUser.findOne({ email: email}, (err, item) =>{
 		if(err || !item )
 			return errorHandler(err, next, item)
@@ -62,7 +63,7 @@ const signin = (req, res, next) => {
 	let salt = parseInt(process.env.SALT)
 
 	let data = {
-		nombre : req.body.nombre,
+		name : req.body.name,
 		email: req.body.email,
 		password: bcrypt.hashSync(req.body.password, salt),   
 		role : req.body.role
@@ -87,7 +88,7 @@ const signin = (req, res, next) => {
 		res.json({
 			result: true,
 			data: {
-			usuarioId: item._id,
+			userId: item._id,
 			role: item.role,
 			token: token
 			}

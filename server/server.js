@@ -30,7 +30,14 @@ const swaggerDefinition = {
 	  version: '1.0.0', // Version (required)
 	  description: 'An api to manage budgets', // Description (optional)
 	},
-	host: `localhost:${process.env.PORT}`, // Host (optional)
+	securityDefinitions:{
+		bearerAuth: {
+			type: 'apiKey',
+			name: 'Authorization',
+			in: 'header',
+		},
+	},
+ 	host: `localhost:${process.env.PORT}`, // Host (optional)
 	basePath: '/api/v1/', // Base path (optional)
 };
   
@@ -40,7 +47,7 @@ const options = {
 	swaggerDefinition,
 	// Path to the API docs
 	// Note that this path is relative to the current directory from which the Node.js is ran, not the application itself.
-	apis: ['./server/routers/v1/*.js'],
+	apis: ['./server/routers/v1/login_router.js', './server/routers/v1/*.js'],
 };
   
 const swaggerDocs = swaggerJsdoc(options);

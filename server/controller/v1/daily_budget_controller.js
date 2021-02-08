@@ -1,29 +1,51 @@
+import { endOfDay, startOfDay } from 'date-fns'
+const sendErrorResponse = require('../../utils/errors');
+const mongoose = require('mongoose');
 const ModelDailyBudget = require('../../models/model_daily_budget');
-const ModelUser = require('../../models/model_user');
 
-function errorHandler(err, next, item) {
-    if(err){      
-        return next(err);
-    }
-    if(!item){
-        const error = new Error('Does not exist');
-        error.statusCode = 500;
-        return next(error);
-    }    
-}
-
-const listByUser = async (req, res, next) => {
-    let _userId = req.params.user_id;
-    ModelDailyBudget.find({ user_id: _userId }, (err, items) => {  
-        if (err || !items) return errorHandler(err, next, items);
+const listByActualBudget = (req, res, next) => {
+    let budgetId = mongoose.Types.ObjectId(req.actualBudgetId);
+    ModelDailyBudget.find({ budgetId: budgetId }, (err, dailyBudgets) => {  
+        if (err || !dailyBudgets) 
+            return sendErrorResponse(err, next, dailyBudgets, 
+                                            'Could not find daily budgets');
         res.json({
             result: true,
-            data: items
+            data: dailyBudgets
         });  
     });
 }
 
 
+/*
+* Param budget date
+*/
+const addBudgetDate = (req, res, next, date) => {
+    req.budgetDate = new Date(date.replace(/-/g, '\/'));
+    next();
+}
+
+
+const getByDate = (req, res, next) => {
+    let budgetId = mongoose.Types.ObjectId(req.budgetId);
+    ModelDailyBudget.findOne({budgetId: budgetId, date: {
+                            $gte: startOfDay(req.budgetDate),
+                            $lte: endOfDay(req.budgetDate)
+                        }
+    })
+    .exec( (err, dailyBudget) => {
+        if (err || !dailyBudget) 
+            return sendErrorResponse(err, next, dailyBudget, 
+                                    'Could not find daily budget for this date');
+        res.json({
+            result: true,
+            data: dailyBudget
+        });  
+    });
+}
+
 module.exports = {
-    listByUser,
+    listByActualBudget,
+    addBudgetDate,
+    getByDate,
 };

@@ -6,15 +6,23 @@ const ModelBudget = require('../../models/model_budget');
 const ModelDailyBudget = require('../../models/model_daily_budget');
 const ModelTransaction = require('../../models/model_transaction');
 
-function listByDailyBudget(req, res, next) {
-    let _dailyBudgetId = req.params.dailyBudgetId;
-    ModelTransaction.find({ dailyBudgetId: _dailyBudgetId }, (err, items) => {
-        if (err || !items)
-            return sendErrorResponse(err, next, items, 
-                                        'Does not exist');
+
+/*
+* Param transactions date
+*/
+const addTransactionsDate = (req, res, next, date) => {
+    req.budgetDate = new Date(date.replace(/-/g, '\/'));
+    next();
+}
+
+const listByDailyBudget = (req, res, next) => {
+    ModelTransaction.find({ dailyBudgetId: req.dailyBudgetId  }, (err, transactions) => {
+        if (err || !transactions)
+            return sendErrorResponse(err, next, transactions, 
+                                        'Could not find transactions for this date');
         res.json({
             result: true,
-            data: items
+            data: transactions
         });
     });
 }
@@ -50,8 +58,10 @@ const makeTransaction = async (req, res, next) => {
             dailyBudgetId : dailyBudget._id,
             date : transactionDate,
             amount : req.body.amount,
-            category : req.body.category
+            category : req.body.category,
         }
+        if (req.body.hasOwnProperty('description')) 
+            data['description'] = req.body.description
 
         let tran = await new ModelTransaction(data).generateTransaction(dailyBudget);
         if (!tran) return sendErrorResponse(null, next, tran,
@@ -59,7 +69,7 @@ const makeTransaction = async (req, res, next) => {
         
         res.json({
             result: true,
-            transaction: tran
+            data: tran
         });
 
     } catch (err) {
@@ -69,6 +79,7 @@ const makeTransaction = async (req, res, next) => {
 }
 
 module.exports = {
+    addTransactionsDate,
     listByDailyBudget,
-    makeTransaction
+    makeTransaction,
 };
