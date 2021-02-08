@@ -125,8 +125,8 @@ router.post('/modifyBudget', [isAuth,
  *         description: There was a problem finding budget.             
  */
 router.get('/budget', [isAuth, 
-					   isPremium, 
-					   getActualBudgetId], getActualBudget);
+                        isPremium, 
+                        getActualBudgetId], getActualBudget);
 
 /**
  * @swagger

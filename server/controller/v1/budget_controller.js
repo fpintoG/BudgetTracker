@@ -119,8 +119,7 @@ const modifyBudget = async (req, res, next) => {
 
 
 const getActualBudget = (req, res, next) => {
-    let budgetId = mongoose.Types.ObjectId(req.actualBudgetId)
-    ModelBudget.findById(budgetId)
+    ModelBudget.findById(req.actualBudgetId)
     .exec( (err, budget) => {
         if (err || !budget) 
             return sendErrorResponse(err, next, budget, 

@@ -79,7 +79,7 @@ router.post('/transaction', [isAuth,
  *         description: There was a problem finding transactions.             
  */
 router.get('/transactions', [isAuth, 
-							isPremium, 
-							getBudgetIdByDate,
-							findDailyBudgetId], listByDailyBudget);
+						isPremium, 
+						getBudgetIdByDate,
+						findDailyBudgetId], listByDailyBudget);
 module.exports = router;

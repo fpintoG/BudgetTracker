@@ -8,8 +8,8 @@ const findDailyBudgetId = (req, res, next) => {
                                 $gte: startOfDay(req.startDate),
                                 $lte: endOfDay(req.endDate)
                            }
-    })
-    .distinct('_id', (err, ids) => {
+    }, {_id: 1})
+    .exec((err, ids) => {
         if (err || !ids)
             return sendErrorResponse(err, next, ids, 
                                         'Could not find daily budgets');
