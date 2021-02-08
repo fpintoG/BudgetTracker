@@ -25,10 +25,6 @@ const userById = (req, res, next ,id) => {
 
 }
 
-//==========
-//	get Usuario
-//==========
-
 const getUser = async (req, res) => {
 
     res.json({

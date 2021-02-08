@@ -1,0 +1,893 @@
+{
+	"info": {
+		"_postman_id": "bef4aafc-ec74-40cb-9fcc-4a9d661c25a8",
+		"name": "Budget Tracker",
+		"description": "API encargada de manejar presuspuestos flexibles por periodos.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autentificación de usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "admin@test.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}/login",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": "Autentificación de usuario. Como respuesta se entrega un token JWT que debe ser agregado al header como \"Authorization\"."
+			},
+			"response": [
+				{
+					"name": "Autentificación de usuario",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@test.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "295"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"127-MdT5oV0SOYT1o4RPPuqxTGigvi8\""
+						},
+						{
+							"key": "Set-Cookie",
+							"value": "connect.sid=s%3A-xMGKm1LFUjzTCvh5s5pC6FdX4ONGpSA.UQZCOSF6mvqncJ945%2FqJr5N0siZOZrwiH5k9ajohfqI; Path=/; HttpOnly"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:36:48 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": {\n        \"user_id\": \"6020b4d548d759db4a80aece\",\n        \"role\": \"ADMIN_ROLE\",\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDIwYjRkNTQ4ZDc1OWRiNGE4MGFlY2UiLCJyb2xlIjoiQURNSU5fUk9MRSIsImlhdCI6MTYxMjc2NjIwOCwiZXhwIjoxNjEyNzY5ODA4fQ.iiYwCiaPvOWCuq_j_zXc4vcaGKSfBnNihCqWpZASIpQ\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Registar usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Carlos\",\n  \"email\": \"normal_user5@test.com\",\n  \"password\": \"123456aA@\",\n  \"role\": \"NORMAL_ROLE.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"signin"
+					]
+				},
+				"description": "# Detalle consulta\nPermite crear un nuevo usuario al ingresar nombre, email y password. El password debe tener numeros y caracteres minusculas y mayusculas y un caracter @$.!%*#?&.\n# Roles\nLos usuarios pueden tener como rol NORMAL_ROLE, PREMIUM_ROLE o ADMIN_ROLE. Estos por defecto tendran el rol NORMAL_ROLE si no se llena el campo 'role' al crear un usuario.\n\nPara crear usuarios es necesario que el creador tenga rol ADMIN_ROLE."
+			},
+			"response": [
+				{
+					"name": "Registar usuario",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Carlos\",\n  \"email\": \"normal_user5@test.com\",\n  \"password\": \"123456aA@\",\n  \"role\": \"NORMAL_ROLE.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/signin",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "302"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"12e-Xu0LtljtR6LYMkXdGsCp76WyHwc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:37:04 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": {\n        \"userId\": \"6020dc10df510bead3c2363a\",\n        \"role\": \"NORMAL_ROLE.\",\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvSWQiOiI2MDIwZGMxMGRmNTEwYmVhZDNjMjM2M2EiLCJyb2xlIjoiTk9STUFMX1JPTEUuIiwiaWF0IjoxNjEyNzY2MjI0LCJleHAiOjE2MTI3Njk4MjR9.52MHDq36qmJPXjjKATGKElYfFhjaQhiTTentPxiwQKk\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear presupuesto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"start_date\": \"2021/02/05\",\n  \"end_date\": \"2021/03/01\",\n  \"active\": true,\n  \"categories\": [\n    {\n      \"category_name\": \"comida\",\n      \"max_amount\": 200000\n    },\n    {\n      \"category_name\": \"transporte\",\n      \"max_amount\": 100000\n    },\n    {\n      \"category_name\": \"deporte\",\n      \"max_amount\": 100000\n    },\n    {\n      \"category_name\": \"arriendo\",\n      \"max_amount\": 300000\n    },\n    {\n      \"category_name\": \"estudios\",\n      \"max_amount\": 100000\n    },\n    {\n      \"category_name\": \"imprevistos\",\n      \"max_amount\": 200000\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/budget",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"budget"
+					]
+				},
+				"description": "# Detalle consulta\nSe genera presupuesto para ese usuario. Este presupuesto es valido por el periodp seleccionado y solo puede hacer un presupuesto activo al mismo tiempo. Presuspuestos pasados quedan en repositorio historico dentro de la base de datos.\n\nPara crear un nuevo presupuesto puede ser necesario ejecutar la consulta que desactiva el presupuesto actual.\n\n# Descripción de campos\n## start_date: \nFecha de inicio para presupuesto (formato YYY/MM/DD). Esta fecha puede ser igual o posterior a la fecha actual, en caso contrario, se reemplazará el valor ingresado por la fecha actual.\n## end_date:\nFecha en que finaliza automaticamente la validez de ese presupuesto  y pasa a formar parte de los presupuestos historicos (formato YYY/MM/DD). \n## categories:\nArreglo con categorias agregadas al presupuesto durante su creación. Cada categoría tiene un nombre único y un valor, el cual representa la porción del presupuesto asignada a esta.\n\n# Tipos de usuario\n## Usuario normal\nSolo puede agregar 5 categorías.\n## Usuario normal\nPuede agregar categorías sin límite."
+			},
+			"response": []
+		},
+		{
+			"name": "Modificar presupuesto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"category_start\": \"transporte\",\n  \"category_dest\": \"comida\",\n  \"amount\": 10000\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/modifyBudget",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"modifyBudget"
+					]
+				},
+				"description": "# Detalle consulta\nEsta consulta permite mover presupuesto disponible desde una categoria hacía otra, modificando la distribución de este.\n\n# Descripción de campos\n\n## category_start:\nCategoría desde la cual se mueve presupuesto disponible.\n\n## category_dest:\nCategoría hacía la cual se mueve presupuesto disponible.\n\n## amount:\nCantidad de dinero disponible que se mueve desde una categoría hacía la otra.\n\n# Tipos de usuario:\n\n## Usuario normal:\nPuede realizar hasta 10 modificaciones al presupuesto.\n\n## Usuario premium:\nPuede realizar modificaciones sin límites."
+			},
+			"response": [
+				{
+					"name": "Modificar presupuesto",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category_start\": \"transporte\",\n  \"category_dest\": \"comida\",\n  \"amount\": 10000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/modifyBudget",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"modifyBudget"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "827"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"33b-GNfzpsDScjun3pUMWE8NZukxiVU\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:28:10 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": {\n        \"active\": true,\n        \"accAmount\": 10000,\n        \"modifications\": 3,\n        \"_id\": \"6020b56648d759db4a80aee4\",\n        \"userId\": \"6020b4d548d759db4a80aece\",\n        \"startDate\": \"2021-02-08T03:52:06.146Z\",\n        \"endDate\": \"2021-03-01T03:00:00.000Z\",\n        \"maxAmount\": 1000000,\n        \"categories\": [\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee5\",\n                \"categoryName\": \"comida\",\n                \"maxAmount\": 230000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee6\",\n                \"categoryName\": \"transporte\",\n                \"maxAmount\": 70000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee7\",\n                \"categoryName\": \"mascota\",\n                \"maxAmount\": 100000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee8\",\n                \"categoryName\": \"arriendo\",\n                \"maxAmount\": 300000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee9\",\n                \"categoryName\": \"estudios\",\n                \"maxAmount\": 100000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aeea\",\n                \"categoryName\": \"imprevistos\",\n                \"maxAmount\": 200000\n            }\n        ],\n        \"__v\": 0\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Registrar transacción",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"transaction_date\": \"2021/02/18\",\n  \"category\": \"comida\",\n  \"amount\": 10000,\n  \"description\": \"Visita a restaurante de comida italiana.\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/transaction",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"transaction"
+					]
+				},
+				"description": "# Detalle consulta\nEsta consulta representa parte principal de la aplicación, ya que permite agregar transacciones que luego serán registradas en un presupuesto diario. \n\nCuando se agrega una transacción, se obtiene la fecha asociada para luego registrarla en un presupuesto diario asociado a esa fecha. Los presupuestos diarios se crean utlizando como plantilla el presupuesto del usuario en ese momento. \n\n# Descripción de campos\n\n## transaction_date:\nRepresenta la fecha en la que se realizó la transacción. Esta puede tener cierto retardo con respecto a cuando se ingresa, por lo que se dejacomo un campo a ingresar por el cliente (front web o aplicación).\n\n## category:\nRepresenta la categoría a la que se asignará la transacción. Esta debe ser una categoría presente en el presupuesto asignado a ese periodo.\n\n## amount:\nEs el campo en el que se ingresa el valor monetario de la transacción.\n\n## description:\nEs un campo opcional que describe la transacción.\n\n\n"
+			},
+			"response": [
+				{
+					"name": "Registrar transacción",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transaction_date\": \"2021/02/18\",\n  \"category\": \"comida\",\n  \"amount\": 10000,\n  \"description\": \"Visita a restaurante de comida italiana.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/transaction",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"transaction"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "234"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"ea-nCcR8oT2f5Y7sOzUcGH9UUV59cc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:29:22 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": {\n        \"description\": \"Visita a restaurante de comida italiana.\",\n        \"_id\": \"6020da42df510bead3c23639\",\n        \"dailyBudgetId\": \"6020da41df510bead3c23632\",\n        \"date\": \"2021-02-18T03:00:00.000Z\",\n        \"amount\": 10000,\n        \"category\": \"comida\",\n        \"__v\": 0\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Obtener presupuesto actual de usuario",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/budget",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"budget"
+					]
+				},
+				"description": "# Detalle consulta\nObtiene detalle de presupuesto activo asociado a ese usuario. Solo puede haber un presupuesto activo."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener presupuestos diarios actuales",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/currentDailyBudgets",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"currentDailyBudgets"
+					]
+				},
+				"description": "# Detalle consulta\nLa razón por la que se crean presupuestos diarios es porque el presupuesto definido como plantilla puede cambiar a lo largo del periodo en el que se encuentra activo. Sin embargo, los presupuestos diarios creados previamente se mantendrán sin alterar para guardar el historial de estos.\n\nEsta consulta obiene los presupuestos diarios generados durante el periodo actual."
+			},
+			"response": [
+				{
+					"name": "Obtener presupuestos diarios actuales",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/currentDailyBudgets",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"currentDailyBudgets"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "803"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"323-rwapsr0MiTd4HwkukrvLHt/kbMc\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:28:46 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": [\n        {\n            \"accAmount\": 10000,\n            \"updated\": true,\n            \"_id\": \"6020b57f48d759db4a80aeeb\",\n            \"categories\": [\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aeec\",\n                    \"categoryName\": \"comida\",\n                    \"aviableAmount\": 200000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aeed\",\n                    \"categoryName\": \"transporte\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 10000,\n                    \"_id\": \"6020b58048d759db4a80aeee\",\n                    \"categoryName\": \"mascota\",\n                    \"aviableAmount\": 90000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aeef\",\n                    \"categoryName\": \"arriendo\",\n                    \"aviableAmount\": 300000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aef0\",\n                    \"categoryName\": \"estudios\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aef1\",\n                    \"categoryName\": \"imprevistos\",\n                    \"aviableAmount\": 200000\n                }\n            ],\n            \"budgetId\": \"6020b56648d759db4a80aee4\",\n            \"date\": \"2021-02-17T03:00:00.000Z\",\n            \"aviableAmount\": 990000,\n            \"__v\": 0\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Obtener presupuestos por fecha",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/budget?start_date=2021-01-01&end_date=2021-04-01",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"budget"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2021-01-01",
+							"description": "Fecha de inicio para busqueda"
+						},
+						{
+							"key": "end_date",
+							"value": "2021-04-01",
+							"description": "Fecha de fin para busqueda"
+						}
+					]
+				},
+				"description": "# Detalle consulta\nObtiene los presupuestos creados dentro del rango de fechas seleccionado. En este caso se incluyen también los presupuestos inactivos.\n"
+			},
+			"response": [
+				{
+					"name": "Obtener presupuestos por fecha",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/budget?start_date=2021-01-01&end_date=2021-04-01",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"budget"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2021-01-01",
+									"description": "Fecha de inicio para busqueda"
+								},
+								{
+									"key": "end_date",
+									"value": "2021-04-01",
+									"description": "Fecha de fin para busqueda"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "827"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"33b-GNfzpsDScjun3pUMWE8NZukxiVU\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:28:20 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": {\n        \"active\": true,\n        \"accAmount\": 10000,\n        \"modifications\": 3,\n        \"_id\": \"6020b56648d759db4a80aee4\",\n        \"userId\": \"6020b4d548d759db4a80aece\",\n        \"startDate\": \"2021-02-08T03:52:06.146Z\",\n        \"endDate\": \"2021-03-01T03:00:00.000Z\",\n        \"maxAmount\": 1000000,\n        \"categories\": [\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee5\",\n                \"categoryName\": \"comida\",\n                \"maxAmount\": 230000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee6\",\n                \"categoryName\": \"transporte\",\n                \"maxAmount\": 70000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee7\",\n                \"categoryName\": \"mascota\",\n                \"maxAmount\": 100000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee8\",\n                \"categoryName\": \"arriendo\",\n                \"maxAmount\": 300000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aee9\",\n                \"categoryName\": \"estudios\",\n                \"maxAmount\": 100000\n            },\n            {\n                \"accAmount\": 0,\n                \"_id\": \"6020b56648d759db4a80aeea\",\n                \"categoryName\": \"imprevistos\",\n                \"maxAmount\": 200000\n            }\n        ],\n        \"__v\": 0\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Obtener presupuestos diarios por fecha",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/dailyBudgets?start_date=2021-01-01&end_date=2021-04-01",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"dailyBudgets"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2021-01-01",
+							"description": "Fecha de inicio para rango de búsqueda"
+						},
+						{
+							"key": "end_date",
+							"value": "2021-04-01",
+							"description": "Fecha de fín para rango de búsqueda"
+						}
+					]
+				},
+				"description": "# Detalle consulta\nSe obtienen los presupuestos diarios generados dentro de un rango de fechas. Estos pueden estar asociados a distintos presupuestos."
+			},
+			"response": [
+				{
+					"name": "Obtener presupuestos diarios por fecha",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/dailyBudgets?start_date=2021-01-01&end_date=2021-04-01",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"dailyBudgets"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2021-01-01",
+									"description": "Fecha de inicio para rango de búsqueda"
+								},
+								{
+									"key": "end_date",
+									"value": "2021-04-01",
+									"description": "Fecha de fín para rango de búsqueda"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1590"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"636-vmnxg0eBtvjDv+fJnsVU7Yjr0bo\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:28:27 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": [\n        {\n            \"accAmount\": 110000,\n            \"updated\": false,\n            \"_id\": \"6020b50e48d759db4a80aedb\",\n            \"categories\": [\n                {\n                    \"accAmount\": 10000,\n                    \"_id\": \"6020b50e48d759db4a80aedc\",\n                    \"categoryName\": \"comida\",\n                    \"aviableAmount\": 190000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b50e48d759db4a80aedd\",\n                    \"categoryName\": \"transporte\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b50e48d759db4a80aede\",\n                    \"categoryName\": \"deporte\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b50e48d759db4a80aedf\",\n                    \"categoryName\": \"arriendo\",\n                    \"aviableAmount\": 300000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b50e48d759db4a80aee0\",\n                    \"categoryName\": \"estudios\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 100000,\n                    \"_id\": \"6020b50e48d759db4a80aee1\",\n                    \"categoryName\": \"imprevistos\",\n                    \"aviableAmount\": 100000\n                }\n            ],\n            \"budgetId\": \"6020b50048d759db4a80aed4\",\n            \"date\": \"2021-02-17T03:00:00.000Z\",\n            \"aviableAmount\": 890000,\n            \"__v\": 0\n        },\n        {\n            \"accAmount\": 10000,\n            \"updated\": true,\n            \"_id\": \"6020b57f48d759db4a80aeeb\",\n            \"categories\": [\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aeec\",\n                    \"categoryName\": \"comida\",\n                    \"aviableAmount\": 200000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aeed\",\n                    \"categoryName\": \"transporte\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 10000,\n                    \"_id\": \"6020b58048d759db4a80aeee\",\n                    \"categoryName\": \"mascota\",\n                    \"aviableAmount\": 90000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aeef\",\n                    \"categoryName\": \"arriendo\",\n                    \"aviableAmount\": 300000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aef0\",\n                    \"categoryName\": \"estudios\",\n                    \"aviableAmount\": 100000\n                },\n                {\n                    \"accAmount\": 0,\n                    \"_id\": \"6020b58048d759db4a80aef1\",\n                    \"categoryName\": \"imprevistos\",\n                    \"aviableAmount\": 200000\n                }\n            ],\n            \"budgetId\": \"6020b56648d759db4a80aee4\",\n            \"date\": \"2021-02-17T03:00:00.000Z\",\n            \"aviableAmount\": 990000,\n            \"__v\": 0\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Obtener transacciones por fecha",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/transactions?start_date=2021-01-01&end_date=2021-04-01",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2021-01-01",
+							"description": "Fecha de inicio para busqueda"
+						},
+						{
+							"key": "end_date",
+							"value": "2021-04-01",
+							"description": "Fecha de fin para busqueda"
+						}
+					]
+				},
+				"description": "# Detalle consulta\nEsta consulta entrega el detalle de las transacciones realizadas en un range de fechas determidado. Las fechas se deben ingresar como query en la URL con el formato YYYY-MM-DD. "
+			},
+			"response": [
+				{
+					"name": "Obtener transacciones por fecha",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/transactions?start_date=2021-01-01&end_date=2021-04-01",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"transactions"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2021-01-01",
+									"description": "Fecha de inicio para busqueda"
+								},
+								{
+									"key": "end_date",
+									"value": "2021-04-01",
+									"description": "Fecha de fin para busqueda"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Credentials",
+							"value": "true"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "625"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"271-3iwdkSCeYn1V7ScvkUFQqBVnOEw\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 08 Feb 2021 06:28:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"result\": true,\n    \"data\": [\n        {\n            \"description\": \"Visita a restaurante de comida italiana.\",\n            \"_id\": \"6020b50e48d759db4a80aee2\",\n            \"dailyBudgetId\": \"6020b50e48d759db4a80aedb\",\n            \"date\": \"2021-02-17T03:00:00.000Z\",\n            \"amount\": 10000,\n            \"category\": \"comida\",\n            \"__v\": 0\n        },\n        {\n            \"description\": \"Urgencia medica.\",\n            \"_id\": \"6020b52548d759db4a80aee3\",\n            \"dailyBudgetId\": \"6020b50e48d759db4a80aedb\",\n            \"date\": \"2021-02-17T03:00:00.000Z\",\n            \"amount\": 100000,\n            \"category\": \"imprevistos\",\n            \"__v\": 0\n        },\n        {\n            \"description\": \"Alimento para mascota.\",\n            \"_id\": \"6020b58048d759db4a80aef2\",\n            \"dailyBudgetId\": \"6020b57f48d759db4a80aeeb\",\n            \"date\": \"2021-02-17T03:00:00.000Z\",\n            \"amount\": 10000,\n            \"category\": \"mascota\",\n            \"__v\": 0\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Desactivar presupuesto actual",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/budget",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"budget"
+					]
+				},
+				"description": "# Detalle consulta\nSi hay un presupuesto activo para el usuario autentificado, es posible quitarlo para enviarlo a ser almacenado como un presupuesto historico. La fecha de fin es reemplazada por la fecha actual."
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDIwYjRkNTQ4ZDc1OWRiNGE4MGFlY2UiLCJyb2xlIjoiQURNSU5fUk9MRSIsImlhdCI6MTYxMjc2NTY1MywiZXhwIjoxNjEyNzY5MjUzfQ.lPUz6bwiTV-CtlftsuVwLatK-pPaNHCm7jDLE4TEiyA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:5000/api/v1/"
+		}
+	]
+}
