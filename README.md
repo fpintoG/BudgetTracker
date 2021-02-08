@@ -24,7 +24,11 @@ npm start
 localhost:5000/api-docs
 ```
 
-- Para acceder a las consultas en Postman primero es necesario ejecutar la consulta de 'login' y luego copiar el pegar el token en el campo 'Authorization' definido para toda la colección.
+- Para acceder a las consultas en Postman primero es necesario ejecutar la consulta de 'login' y luego copiar y pegar el token en el campo 'Authorization' definido para toda la colección:
+
+```
+<token>
+```
 
 - De igual forma para acceder a las consultas en Swagger, es neceario copiar y pegar el token en el campo 'Authorization' de la UI. En este caso, a diferencia de en Postman, se requiere escribir el token de la siguiente forma (agregando la palabra Bearer al principio):
 
