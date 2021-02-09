@@ -16,7 +16,12 @@ npm start
 
 ## Documentación
 
-- Para ver con mayor detalle que hace cada consulta, revisar documentación definida en Postman.
+- Para ver con mayor detalle que hace cada consulta, revisar documentación definida en Postman:
+
+```
+https://documenter.getpostman.com/view/14495862/TW76Cj6e
+```
+
 
 - También se monta documentación utilizando Swagger. Esta se puede acceder cuando se inicia la aplicación en la url:
     
